@@ -87,25 +87,31 @@ class recommender:
         #
         f = codecs.open('BX-Book-Ratings.csv', 'r', 'utf8')
         f.readline()
-        for line in f:
-            i += 1
-            # separate line into fields
-            fields = line.split(';')
-            user = fields[0].strip('"')
-            book = fields[1].strip('"')
-            rating = int(fields[2].strip().strip('"'))
-            if user in self.data:
-                currentRatings = self.data[user]
-            else:
-                currentRatings = {}
-            currentRatings[book] = rating
-            self.data[user] = currentRatings
-        f.close()
+        try:
+
+            for line in f:
+                i += 1
+                # separate line into fields
+                fields = line.split(';')
+                user = fields[0].strip('"')
+                book = fields[1].strip('"')
+                rating = int(fields[2].strip().strip('"'))
+                if user in self.data:
+                    currentRatings = self.data[user]
+                else:
+                    currentRatings = {}
+                currentRatings[book] = rating
+                self.data[user] = currentRatings
+            f.close()
+        except Exception as e:
+            print("%i" % i)
+            print e.message
         #
         # Now load books into self.productid2name
         # Books contains isbn,title, and author among other fields
         #
         f = codecs.open('BX-Books.csv', 'r', 'utf8')
+        f.readline()
         for line in f:
             i += 1
             # separate line into fields
@@ -156,7 +162,10 @@ class recommender:
                 sum_x += x
                 sum_y += y
                 sum_x2 += x ** 2
-                sum_x2 += y ** 2
+                sum_y2 += y ** 2
+        # now compute denominator
+        if(n==0):
+            return 0
         # now compute denominator
         denominator = sqrt(sum_x2 - (sum_x ** 2) / n) * sqrt(sum_y2 - (sum_y ** 2) / n)
         if denominator == 0:
@@ -173,6 +182,8 @@ class recommender:
                 distances.append((instance, distance))
         # sort based on distance -- closest first
         distances.sort(key=lambda artistTuple: artistTuple[1], reverse=True)
+
+        return distances
 
     def recommend(self, user):
         """Give list of recommendations"""
@@ -215,6 +226,10 @@ class recommender:
         # Return the first n items
         return recommendations[:self.n]
 
- # usage demo
-r=recommender(users)
+        # usage demo
+
+
+r = recommender(users)
+print r.recommend('Jordyn')
 r.loadBookDB()
+print r.recommend('171118')
