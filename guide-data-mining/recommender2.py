@@ -3,7 +3,7 @@
 # @Time    : 17/9/29 下午9:27
 # @Author  : foragile
 # @Site    : 
-# @File    : recommender.py
+# @File    : recommender2.py
 # @Software: pptb
 import codecs
 from math import sqrt
